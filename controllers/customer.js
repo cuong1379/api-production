@@ -1,23 +1,23 @@
 const mongoose = require("mongoose");
-const Production = require("../models/production");
+const Customer = require("../models/customer");
 
-exports.createProduction = (req, res) => {
+exports.createCustomer = (req, res) => {
   console.log(req.body);
-  const production = new Production({
+  const customer = new Customer({
     name: req.body.name,
-    price: req.body.price,
-    description: req.body.description,
-    thumbnail: req.body.thumbnail,
-    quantity: req.body.quantity,
+    phone: req.body.phone,
+    date: req.body.date,
+    count: req.body.count,
+    content: req.body.content,
   });
 
-  return production
+  return customer
     .save()
-    .then((newProduction) => {
+    .then((newCustomer) => {
       return res.status(201).json({
         success: true,
         message: "New cause created successfully",
-        production: newProduction,
+        customer: newCustomer,
       });
     })
     .catch((error) => {
@@ -30,14 +30,14 @@ exports.createProduction = (req, res) => {
     });
 };
 
-exports.getAllProduction = (req, res) => {
-  Production.find()
+exports.getAllCustomer = (req, res) => {
+  Customer.find()
     .select("id name price description thumbnail quantity")
-    .then((allProduction) => {
+    .then((allCustomer) => {
       return res.status(200).json({
         success: true,
-        message: "A list of all production",
-        production: allProduction,
+        message: "A list of all customer",
+        customer: allCustomer,
       });
     })
     .catch((err) => {
@@ -49,47 +49,35 @@ exports.getAllProduction = (req, res) => {
     });
 };
 
-// get single production
-exports.getSingleProduction = async (req, res) => {
+exports.getSingleCustomer = async (req, res) => {
   console.log(req.params.id);
-  Production.findById(req.params.id)
-    .then((singleProduction) => {
+  Customer.findById(req.params.id)
+    .then((singleCustomer) => {
       res.status(200).json({
         success: true,
-        message: `More on ${singleProduction.name}`,
-        Production: singleProduction,
+        message: `More on ${singleCustomer.name}`,
+        Customer: singleCustomer,
       });
     })
     .catch((err) => {
       res.status(500).json({
         success: false,
-        message: "This production does not exist",
+        message: "This Customer does not exist",
         error: err.message,
       });
     });
-  // const product = await Production.findById(req.params.id)
-  // if(!product) return res.status(500).json({
-  //   success: false,
-  //   message: 'This production does not exist',
-  //   error: err.message,
-  // });
-  // res.status(200).json({
-  //   success: true,
-  //   Production: product,
-  // });
 };
 
-// update production
-exports.updateProduction = (req, res) => {
+exports.updateCustomer = (req, res) => {
   const id = req.params.id;
   const updateObject = req.body;
-  Production.updateOne({ _id: id }, { $set: updateObject })
+  Customer.updateOne({ _id: id }, { $set: updateObject })
     .exec()
     .then(() => {
       res.status(200).json({
         success: true,
-        message: "Production is updated",
-        updateProduction: updateObject,
+        message: "Customer is updated",
+        updateCustomer: updateObject,
       });
     })
     .catch((err) => {
@@ -100,11 +88,10 @@ exports.updateProduction = (req, res) => {
     });
 };
 
-// delete a production
-exports.deleteProduction = (req, res) => {
+exports.deleteCustomer = (req, res) => {
   const id = req.params.id;
   console.log(id);
-  Production.findByIdAndRemove(id)
+  Customer.findByIdAndRemove(id)
     .exec()
     .then(() =>
       res.json({
