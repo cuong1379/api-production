@@ -32,7 +32,7 @@ exports.createCustomer = (req, res) => {
 
 exports.getAllCustomer = (req, res) => {
   Customer.find()
-    .select("id name price description thumbnail quantity")
+    .select("id name phone date count content")
     .then((allCustomer) => {
       return res.status(200).json({
         success: true,
