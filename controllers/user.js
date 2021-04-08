@@ -3,6 +3,7 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { registerValidator } = require("./../validations/auth");
+// const verifyToken = require("./../middlewares/verifyToken");
 
 exports.createUser = async (req, res) => {
   console.log(req.body);
@@ -48,8 +49,6 @@ exports.loginUser = async (req, res) => {
   if (!user) return res.status(422).send("username is not correct");
 
   const checkPassword = bcrypt.compare(req.body.password, user.password);
-  console.log(req.body.password);
-  console.log(user.password);
   if (!checkPassword) return res.status(422).send(" Password is not correct");
 
   return res.status(200).json({
@@ -57,6 +56,13 @@ exports.loginUser = async (req, res) => {
     message: "Dang nhap thanh cong",
     user,
   });
+
+  //   const token = await jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET, {
+  //     expiresIn: 60 * 60 * 24,
+  //   });
+  //   console.log(token);
+  //   res.header("auth-token", token).send(token);
+  //   console.log(process.env.TOKEN_SECRET);
 };
 
 exports.getAllUser = (req, res) => {
