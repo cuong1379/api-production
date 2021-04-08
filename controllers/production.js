@@ -57,7 +57,7 @@ exports.getSingleProduction = async (req, res) => {
       res.status(200).json({
         success: true,
         message: `More on ${singleProduction.name}`,
-        Production: singleProduction,
+        production: singleProduction,
       });
     })
     .catch((err) => {

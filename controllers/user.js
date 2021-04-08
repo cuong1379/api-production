@@ -1,23 +1,20 @@
 const mongoose = require("mongoose");
-const Customer = require("../models/customer");
+const User = require("../models/user");
 
-exports.createCustomer = (req, res) => {
+exports.createUser = (req, res) => {
   console.log(req.body);
-  const customer = new Customer({
-    name: req.body.name,
-    phone: req.body.phone,
-    date: req.body.date,
-    count: req.body.count,
-    content: req.body.content,
+  const user = new User({
+    username: req.body.username,
+    password: req.body.password,
   });
 
-  return customer
+  return user
     .save()
-    .then((newCustomer) => {
+    .then((newUser) => {
       return res.status(201).json({
         success: true,
-        message: "New cause created successfully",
-        customer: newCustomer,
+        message: "New user created successfully",
+        user: newUser,
       });
     })
     .catch((error) => {
@@ -30,14 +27,14 @@ exports.createCustomer = (req, res) => {
     });
 };
 
-exports.getAllCustomer = (req, res) => {
-  Customer.find()
-    .select("id name phone date count content")
-    .then((allCustomer) => {
+exports.getAllUser = (req, res) => {
+  User.find()
+    .select("id username password")
+    .then((allUser) => {
       return res.status(200).json({
         success: true,
-        message: "A list of all customer",
-        customer: allCustomer,
+        message: "A list of all User",
+        user: allUser,
       });
     })
     .catch((err) => {
@@ -49,35 +46,35 @@ exports.getAllCustomer = (req, res) => {
     });
 };
 
-exports.getSingleCustomer = async (req, res) => {
+exports.getSingleUser = async (req, res) => {
   console.log(req.params.id);
-  Customer.findById(req.params.id)
-    .then((singleCustomer) => {
+  User.findById(req.params.id)
+    .then((singleUser) => {
       res.status(200).json({
         success: true,
-        message: `More on ${singleCustomer.name}`,
-        customer: singleCustomer,
+        message: `More on`,
+        user: singleUser,
       });
     })
     .catch((err) => {
       res.status(500).json({
         success: false,
-        message: "This Customer does not exist",
+        message: "This User does not exist",
         error: err.message,
       });
     });
 };
 
-exports.updateCustomer = (req, res) => {
+exports.updateUser = (req, res) => {
   const id = req.params.id;
   const updateObject = req.body;
-  Customer.updateOne({ _id: id }, { $set: updateObject })
+  User.updateOne({ _id: id }, { $set: updateObject })
     .exec()
     .then(() => {
       res.status(200).json({
         success: true,
-        message: "Customer is updated",
-        updateCustomer: updateObject,
+        message: "User is updated",
+        updateUser: updateObject,
       });
     })
     .catch((err) => {
@@ -88,10 +85,10 @@ exports.updateCustomer = (req, res) => {
     });
 };
 
-exports.deleteCustomer = (req, res) => {
+exports.deleteUser = (req, res) => {
   const id = req.params.id;
   console.log(id);
-  Customer.findByIdAndRemove(id)
+  User.findByIdAndRemove(id)
     .exec()
     .then(() =>
       res.json({
