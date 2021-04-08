@@ -19,6 +19,8 @@ exports.createUser = async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const hashPassword = await bcrypt.hash(req.body.password, salt);
 
+  console.log("%c%s", "color: #24eb24", hashPassword);
+
   const user = new User({
     username: req.body.username,
     password: hashPassword,
@@ -51,18 +53,16 @@ exports.loginUser = async (req, res) => {
   const checkPassword = bcrypt.compare(req.body.password, user.password);
   if (!checkPassword) return res.status(422).send(" Password is not correct");
 
+  const token = await jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET, {
+    expiresIn: 60 * 60 * 24,
+  });
+
   return res.status(200).json({
     status: "ok",
     message: "Dang nhap thanh cong",
+    token,
     user,
   });
-
-  //   const token = await jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET, {
-  //     expiresIn: 60 * 60 * 24,
-  //   });
-  //   console.log(token);
-  //   res.header("auth-token", token).send(token);
-  //   console.log(process.env.TOKEN_SECRET);
 };
 
 exports.getAllUser = (req, res) => {

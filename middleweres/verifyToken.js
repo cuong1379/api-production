@@ -1,14 +1,23 @@
 const jwt = require("jsonwebtoken");
 
-module.exports = (request, response, next) => {
-  const token = request.header("auth-token");
-
-  if (!token) return response.status(401).send("Access Denied");
+const authenticate = (request, response, next) => {
+  const token = request.headers.authorization.replace("Bearer ", "");
+  if (!token)
+    return response.json({
+      success: false,
+      message: "Thiếu token",
+    });
 
   try {
     const verified = jwt.verify(token, process.env.TOKEN_SECRET);
-    next();
+    console.log(verified);
+    if (verified) return next();
   } catch (err) {
-    return response.status(400).send("Invalid Token");
+    return response.json({
+      success: false,
+      message: "Xác thực thất bại",
+    });
   }
 };
+
+module.exports = authenticate;
