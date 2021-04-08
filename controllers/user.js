@@ -1,11 +1,26 @@
 const mongoose = require("mongoose");
 const User = require("../models/user");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const { registerValidator } = require("./../validations/auth");
 
-exports.createUser = (req, res) => {
+exports.createUser = async (req, res) => {
   console.log(req.body);
+  const { error } = registerValidator(req.body);
+  if (error) return res.status(422).send(error.details[0].message);
+
+  const checkUserExist = await User.findOne({
+    username: req.body.username,
+  });
+  if (checkUserExist)
+    return res.status(422).send("ten nay da dc dat roi em =))");
+
+  const salt = await bcrypt.genSalt(10);
+  const hashPassword = await bcrypt.hash(req.body.password, salt);
+
   const user = new User({
     username: req.body.username,
-    password: req.body.password,
+    password: hashPassword,
   });
 
   return user
@@ -25,6 +40,23 @@ exports.createUser = (req, res) => {
         error: error.message,
       });
     });
+};
+
+exports.loginUser = async (req, res) => {
+  const user = await User.findOne({ username: req.body.username });
+  console.log(user);
+  if (!user) return res.status(422).send("username is not correct");
+
+  const checkPassword = bcrypt.compare(req.body.password, user.password);
+  console.log(req.body.password);
+  console.log(user.password);
+  if (!checkPassword) return res.status(422).send(" Password is not correct");
+
+  return res.status(200).json({
+    status: "ok",
+    message: "Dang nhap thanh cong",
+    user,
+  });
 };
 
 exports.getAllUser = (req, res) => {

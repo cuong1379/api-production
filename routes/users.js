@@ -7,9 +7,11 @@ const {
   getSingleUser,
   updateUser,
   deleteUser,
+  loginUser,
 } = require("../controllers/user");
 
-router.post("/", createUser);
+router.post("/register", createUser);
+router.post("/login", loginUser);
 router.get("/", getAllUser);
 router.get("/:id", getSingleUser);
 router.put("/:id", updateUser);
