@@ -12,6 +12,9 @@ const customerSchema = new Schema({
   date: {
     type: String,
   },
+  time: {
+    type: Number,
+  },
   count: {
     type: Number,
   },

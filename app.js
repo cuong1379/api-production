@@ -17,7 +17,7 @@ const productions = require("./routes/productions");
 const customers = require("./routes/customers");
 const users = require("./routes/users");
 
-app.use("/productions", authenticate, productions);
+app.use("/productions", productions);
 app.use("/customers", customers);
 app.use("/users", users);
 app.use("/", (req, res) => res.json({ message: "Chao Cuong" }));

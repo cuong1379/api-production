@@ -7,6 +7,7 @@ exports.createCustomer = (req, res) => {
     name: req.body.name,
     phone: req.body.phone,
     date: req.body.date,
+    time: req.body.time,
     count: req.body.count,
     content: req.body.content,
   });
@@ -32,7 +33,7 @@ exports.createCustomer = (req, res) => {
 
 exports.getAllCustomer = (req, res) => {
   Customer.find()
-    .select("id name phone date count content")
+    .select("id name phone date time count content")
     .then((allCustomer) => {
       return res.status(200).json({
         success: true,
