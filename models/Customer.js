@@ -13,7 +13,7 @@ const customerSchema = new Schema({
     type: String,
   },
   time: {
-    type: Number,
+    type: String,
   },
   count: {
     type: Number,
