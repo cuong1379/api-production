@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 const Production = require("../models/production");
+const bodyParser = require("body-parser");
+const url = require("url");
+const querystring = require("querystring");
 
 exports.createProduction = (req, res) => {
   console.log(req.body);
@@ -7,6 +10,7 @@ exports.createProduction = (req, res) => {
     name: req.body.name,
     price: req.body.price,
     description: req.body.description,
+    category: req.body.category,
     thumbnail: req.body.thumbnail,
     quantity: req.body.quantity,
   });
@@ -32,12 +36,35 @@ exports.createProduction = (req, res) => {
 
 exports.getAllProduction = (req, res) => {
   Production.find()
-    .select("id name price description thumbnail quantity")
+    .select("id name price description thumbnail category quantity")
     .then((allProduction) => {
       return res.status(200).json({
         success: true,
         message: "A list of all production",
         production: allProduction,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        success: false,
+        message: "Server error. Please try again.",
+        error: err.message,
+      });
+    });
+};
+
+//query
+exports.getQueryProduction = (req, res) => {
+  let category = req.query.category;
+  const query = { ...(req.query.category && { category: req.query.category }) };
+
+  Production.find(query)
+    .select("id name price description thumbnail category quantity")
+    .then((queryProduction) => {
+      return res.status(200).json({
+        success: true,
+        message: "A list of query production",
+        production: queryProduction,
       });
     })
     .catch((err) => {
