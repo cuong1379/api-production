@@ -55,25 +55,36 @@ exports.getAllProduction = (req, res) => {
 
 //query
 exports.getQueryProduction = (req, res) => {
-  let category = req.query.category;
-  const query = { ...(req.query.category && { category: req.query.category }) };
+  console.log(req.query);
 
-  Production.find(query)
-    .select("id name price description thumbnail category quantity")
-    .then((queryProduction) => {
-      return res.status(200).json({
-        success: true,
-        message: "A list of query production",
-        production: queryProduction,
+  const queryCategory = req.query.category;
+  const page = req.query.page && req.query.page;
+  const limit = req.query.limit && req.query.limit;
+  const typeSort = req.query.sortBy && req.query.sortBy.split(":")[1];
+  const typeSortQuery = typeSort !== "asc" ? -1 : 1;
+
+  if (queryCategory || page || limit || typeSort)
+    Production.find({ category: queryCategory })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .sort({ price: typeSortQuery })
+      .select(
+        "id name price description thumbnail category quantity createdAt updatedAt"
+      )
+      .then((queryProduction) => {
+        return res.status(200).json({
+          success: true,
+          message: "A list of query production",
+          production: queryProduction,
+        });
+      })
+      .catch((err) => {
+        res.status(500).json({
+          success: false,
+          message: "Server error. Please try again.",
+          error: err.message,
+        });
       });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        success: false,
-        message: "Server error. Please try again.",
-        error: err.message,
-      });
-    });
 };
 
 // get single production
